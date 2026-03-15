@@ -28,6 +28,7 @@ import { MCP } from "../mcp"
 import { LSP } from "../lsp"
 import { ReadTool } from "../tool/read"
 import { FileTime } from "../file/time"
+import { Upload } from "../upload"
 import { Flag } from "../flag/flag"
 import { ulid } from "ulid"
 import { spawn } from "child_process"
@@ -1088,6 +1089,25 @@ export namespace SessionPrompt {
                     sessionID: input.sessionID,
                   },
                 ]
+              }
+              if (Upload.enabled() && MessageV2.isMedia(part.mime)) {
+                log.info("s3 upload: processing image", { mime: part.mime, filename: part.filename })
+                const idx = part.url.indexOf(",")
+                if (idx !== -1) {
+                  const buf = Buffer.from(part.url.slice(idx + 1), "base64")
+                  const s3url = await Upload.upload(buf, part.mime, part.filename)
+                  if (s3url) {
+                    return [
+                      {
+                        ...part,
+                        url: s3url,
+                        messageID: info.id,
+                        sessionID: input.sessionID,
+                      },
+                    ]
+                  }
+                  // upload failed — fall through to keep original data: url
+                }
               }
               break
             case "file:":

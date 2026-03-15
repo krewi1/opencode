@@ -65,6 +65,13 @@ export namespace Flag {
   export const OPENCODE_SKIP_MIGRATIONS = truthy("OPENCODE_SKIP_MIGRATIONS")
   export const OPENCODE_STRICT_CONFIG_DEPS = truthy("OPENCODE_STRICT_CONFIG_DEPS")
 
+  // S3-compatible object storage (e.g. Hetzner)
+  export const OPENCODE_S3_ENDPOINT = process.env["OPENCODE_S3_ENDPOINT"]
+  export const OPENCODE_S3_BUCKET = process.env["OPENCODE_S3_BUCKET"]
+  export const OPENCODE_S3_REGION = process.env["OPENCODE_S3_REGION"]
+  export const OPENCODE_S3_ACCESS_KEY_ID = process.env["OPENCODE_S3_ACCESS_KEY_ID"]
+  export const OPENCODE_S3_SECRET_ACCESS_KEY = process.env["OPENCODE_S3_SECRET_ACCESS_KEY"]
+
   function number(key: string) {
     const value = process.env[key]
     if (!value) return undefined
